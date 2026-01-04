@@ -1,7 +1,10 @@
-import {  heading, opposite } from "./global_snake_var.js";
+import { heading, opposite } from "./global_snake_var.js";
+import { drawOnDisplay } from "./board_functions.js";
+
+const inRange = (n, max, min) => n < max && n > min;
 
 export const withinBoundary = (box, y, x) =>
-  x < box[0].length && y < box.length && x >= 0 && y >= 0;
+  inRange(x, box[0].length - 1, 0) && inRange(y, box.length - 1, 0);
 
 const isNotOccupied = (snake, y, x) =>
   !snake.body.some(([y1, x1]) => y1 === y && x1 === x);
@@ -9,21 +12,8 @@ const isNotOccupied = (snake, y, x) =>
 export const isValidMove = (snake, box, y, x) =>
   withinBoundary(box, y, x) && isNotOccupied(snake, y, x);
 
-export const updateDisplay = (box) => {
-  box = box.map((row) => row.join(" ")).join("\n");
-  console.log(box);
-};
-
-export const drawOnDisplay = (snake, box, char) => {
-  snake.body.forEach(([y, x]) => {
-    if (withinBoundary(box, y, x)) {
-      box[y][x] = char;
-    }
-  });
-};
-
 export const moveSnake = (snake, newHead, box) => {
-  drawOnDisplay(snake, box, "-");
+  drawOnDisplay(snake, box, " ");
   snake.body.unshift(newHead);
   snake.body.pop();
 };
