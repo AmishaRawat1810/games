@@ -1,6 +1,6 @@
 import { heading, opposite } from "./global_snake_var.js";
 import { drawOnDisplay } from "./board_functions.js";
-import { isFrogPresent } from "./obstacleForSnake.js";
+import { isFrogPresent } from "./foodForSnake.js";
 
 const inRange = (n, max, min) => n < max && n > min;
 

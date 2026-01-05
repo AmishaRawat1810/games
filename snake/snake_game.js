@@ -2,7 +2,7 @@ import { getInput } from "./mediatorForSnake.js";
 import { executeMove } from "./helperForSnake.js";
 import { displayScreen, drawOnDisplay } from "./board_functions.js";
 import { max, min, screen, snake } from "./global_snake_var.js";
-import { placeFrogs } from "./obstacleForSnake.js";
+import { placeFrogs } from "./foodForSnake.js";
 
 const start = (snake, screen) => {
   drawOnDisplay(snake, screen, snake.char);
