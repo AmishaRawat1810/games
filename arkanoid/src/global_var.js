@@ -12,7 +12,7 @@ export const VALIDKEYS = {
 };
 
 export const msg = `
-    -> a     : LEFT
-    -> d     : RIGHT
-    -> q     : QUIT
+  -> a     : LEFT
+  -> d     : RIGHT
+  -> q     : QUIT
   `;
