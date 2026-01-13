@@ -20,4 +20,3 @@ const tiles = create2DArray(5, 50, "▬");
 writeOnGrid(tiles, grid);
 writeOnGrid(platform, grid);
 console.log(display(grid));
-// console.log(display(tiles));
