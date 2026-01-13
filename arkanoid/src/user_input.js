@@ -1,42 +1,19 @@
-Deno.stdin.setRaw(true, { cbreak: true });
+import { msg, VALIDKEYS } from "./global_var.js";
 
-export const VALIDKEYS = {
-  "97": "a\n",
-  "100": "d\n",
-  "27,91,67": "right\n",
-  "27,91,68": "left\n",
-};
-
-export const msg = `
-  -> w     : FORWARD
-  -> s     : BACKWARD
-  -> a     : LEFT
-  -> d     : RIGHT
-  -> space : JUMP
-  -> enter : SHOOT
-
-  TO EXIT : PRESS Q!
-  `;
-
-async function getInput() {
-  const buffer = new Uint8Array(3);
-  const decoder = new TextDecoder();
+export async function getInput() {
+  Deno.stdin.setRaw(true);
   console.log(msg);
+  const buffer = new Uint8Array(4);
+  let action = "";
 
-  while (true) {
+  try {
     const nread = await Deno.stdin.read(buffer);
     const bytes = buffer.subarray(0, nread);
-    const keyString = decoder.decode(bytes);
-
-    if (keyString === "q") Deno.exit(0);
-
     const keyCode = bytes.toString();
-
-    if (keyCode in VALIDKEYS) {
-      const response = VALIDKEYS[keyCode];
-      await Deno.stdout.write(new TextEncoder().encode(response));
-    }
+    if (keyCode === "113") Deno.exit(0);
+    action = VALIDKEYS[keyCode];
+  } finally {
+    Deno.stdin.setRaw(false);
   }
+  return action;
 }
-
-await getInput();
