@@ -1,6 +1,6 @@
-import { writeOnGrid } from "./grid_tile_functions.js";
+import { drawOnGrid } from "./grid_tile_fns.js";
 
 export const setUpEnv = (PLATFORM, TILES, GRID) => {
-  writeOnGrid(TILES, GRID);
-  writeOnGrid(PLATFORM, GRID);
+  drawOnGrid(TILES, GRID); //draws the tile
+  drawOnGrid(PLATFORM, GRID); //draws the platform
 };

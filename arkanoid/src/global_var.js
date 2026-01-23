@@ -1,4 +1,4 @@
-import { create2DArray } from "./grid_tile_functions.js";
+import { create2DArray } from "./grid_tile_fns.js";
 
 export const PLATFORM = [[19, 2], [19, 3], [19, 4], [19, 5], [19, 6]];
 export const GRID = create2DArray(20, 52, "_");

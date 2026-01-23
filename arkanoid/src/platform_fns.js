@@ -1,4 +1,4 @@
-import { clearGrid, writeOnGrid } from "./grid_tile_functions.js";
+import { clearGrid, drawOnGrid } from "./grid_tile_fns.js";
 
 export const movePlatform = (PLATFORM, { dy, dx }, move, GRID) => {
   clearGrid(PLATFORM, GRID);
@@ -14,6 +14,5 @@ export const movePlatform = (PLATFORM, { dy, dx }, move, GRID) => {
     PLATFORM.push(newPart);
     PLATFORM.shift();
   }
-
-  writeOnGrid(PLATFORM, GRID);
+  drawOnGrid(PLATFORM, GRID);
 };
