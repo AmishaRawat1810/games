@@ -1,11 +1,11 @@
-[ ] PLATFORM
- - [ ] Stop the platform if it reaches boundary (validation : can be done later)
+[ ] The Ball Movement :
+ - [ ] Ball movement should be independent of the vaus movement and user input. I.e ball should keep moving.
+- [ ] Ball will first fall on the vaus center and then reflects based on : 1) if it is closer to center of vaus the angle will be bigger (50,55,etc) 2) If it is further from the center of vaus the angle will be steeper ( 10,30,20,etc). If it hits on the center of vaus it reflects at the same angle.
 
-[ ] The Bullet
- - [ ] Create a bullet that moves at an angle
+ - [ ] Create a ball that moves at an angle
         - [ ] First try to just move it from one coordinate to another
         - [ ] Move it till the wall 
-        - [ ] If it touches anything that is not empty reflect 
+        - [ ] If it touches anything that is not empty reflect ( angle of incidence = angle of reflection )
         - [ ] If it touches the coordinates where the coordY is 0 and there's no platform there game ends
 
 --------------------------------------
@@ -14,17 +14,3 @@ Instead of recursive "guessing," use an Index Filtering approach. This ensures y
    -> [ ] Filter Valid Cells: Iterate through your grid once and push the coordinates of all
           non-empty (" ") cells and boundaries into a temporary array.
  -> [ ] Select Randomly: Pick one index from that list. This is much faster and never fails.
-
-
-[ ] Break the "Diagonal-Only" Movement :
-     -> To move at angles other than 45degree : 
-       [ ] stop simply negating velocities (dx = -dx)
-       [ ] modify the angle based on where the ball hits the surface. 
-
-       Method A: The Paddle "Hit Position" Offset
-           -> Center Hit: [ ] Ball bounces straight up.
-              -> [ ] Calculate the distance from the center of the paddle: offset = ballX - paddleCenter.
-              -> [ ] Normalize this to a range (e.g., -10 to 10)
-              -> [ ] Set the new angle: angle = (offset * maxAngle) - 90deg
-
-           -> Edge Hit: [ ] Ball bounces at a sharp, shallow angle.
