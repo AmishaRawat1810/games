@@ -1,22 +1,21 @@
-import { getInput } from "./src/user_input.js";
-import { displayGrid, movePlatformInGrid } from "./src/grid_tile_fns.js";
-import { GRID, PLATFORM, TILES } from "./src/global_var.js";
-import { setUpEnv } from "./src/env_setup.js";
+import { BRICKS, GRID, msg, VAUS } from "./src/global_var.js";
+import { setUpEnv } from "./src/setup.js";
+import { moveVaus } from "./src/vaus_fns.js";
+import { getInput } from "./src/input.js";
+import { showDisplay } from "./src/grid_bricks_fns.js";
 
-const play = async (PLATFORM, TILES, GRID) => {
-  setUpEnv(PLATFORM, TILES, GRID);
+const play = () => {
+  setUpEnv(VAUS, BRICKS, GRID);
+  console.error(msg);
+  showDisplay(GRID);
+  throwTheBall(GRID, BRICKS, VAUS);
 
   while (true) {
     console.clear();
-    displayGrid(GRID);
-    const move = await getInput();
-    if (move) {
-      console.clear();
-      console.log({ move });
-      movePlatformInGrid(move, GRID, PLATFORM);
-      displayGrid(GRID);
-    }
+    showDisplay(GRID);
+    const direction = getInput();
+    if (direction) moveVaus(VAUS, direction, GRID);
   }
 };
 
-play(PLATFORM, TILES, GRID);
+play();
