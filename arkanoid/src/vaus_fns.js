@@ -7,10 +7,10 @@ export const moveVaus = (vaus, direction, grid) => {
 
   if (
     (direction === "a" && leftEdge <= 0) ||
-    (direction === "d" && rightEdge >= grid[0].length - 1)
+    (direction === "d" && rightEdge >= grid[0].length - 2)
   ) return;
 
-  direction === "a" ? vaus[0] : vaus[vaus.length - 1];
+  direction === "a" ? vaus[0] : vaus[vaus.length - 2];
 
   clearVaus(vaus, grid);
   vaus.forEach((segment) => (segment[1] += dx));
