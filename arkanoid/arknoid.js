@@ -1,21 +1,25 @@
-import { BRICKS, GRID, msg, VAUS } from "./src/global_var.js";
 import { setUpEnv } from "./src/setup.js";
 import { moveVaus } from "./src/vaus_fns.js";
 import { getInput } from "./src/input.js";
 import { showDisplay } from "./src/grid_bricks_fns.js";
+import { throwTheBall } from "./src/energy_ball_fns.js";
 
-const play = () => {
-  setUpEnv(VAUS, BRICKS, GRID);
+const play = (height, width) => {
+  const { grid, bricks, vaus, energyBall, velocity } = setUpEnv(height, width);
+  const msg = "Use 'a' to move left, 'd' to move right, 'q' to quit";
+
   console.error(msg);
-  showDisplay(GRID);
-  throwTheBall(GRID, BRICKS, VAUS);
+  showDisplay(grid);
+  throwTheBall(grid, energyBall);
 
   while (true) {
     console.clear();
-    showDisplay(GRID);
+    showDisplay(grid);
     const direction = getInput();
-    if (direction) moveVaus(VAUS, direction, GRID);
+    if (direction) moveVaus(vaus, direction, grid);
   }
 };
 
-play();
+const width = 52;
+const height = 20;
+play(height, width);
