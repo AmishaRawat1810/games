@@ -4,7 +4,7 @@ import { brickPresent, showDisplay } from "./src/grid_bricks_fns.js";
 import { throwEnergyBall } from "./src/energy_ball_fns.js";
 
 const width = 100;
-const height = 50;
+const height = 90;
 
 const play = (height, width) => {
   const { grid, bricks, vaus, velocity, energyBall } = setUpEnv(height, width);
@@ -20,7 +20,7 @@ const play = (height, width) => {
     if (!resume || !brickPresent(bricks)) Deno.exit(0);
     showDisplay(grid);
     console.log(msg);
-  }, 300);
+  }, 150);
 };
 
 play(height, width);
