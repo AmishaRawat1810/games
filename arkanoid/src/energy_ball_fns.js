@@ -1,76 +1,87 @@
-const throwTheBall = (grid, ball, prevPos, vaus) => {
-  const [y, x] = [Math.floor(ball.y), Math.floor(ball.x)];
-  clearBallTrace(grid, prevPos, vaus);
-  grid[y][x] = "🔵";
-};
+const drawBall = (grid, ball, prev, vaus) => {
+  const py = Math.floor(prev.y);
+  const px = Math.floor(prev.x);
 
-const clearBallTrace = (grid, prevPos, vaus) => {
-  const [y1, x1] = [Math.floor(prevPos.y), Math.floor(prevPos.x)];
-  const isVausPart = vaus.some((paddle) =>
-    paddle[0] === y1 && paddle[1] === x1
-  );
-
-  if (isVausPart) {
-    grid[y1][x1] = "▬▬";
-    return;
+  if (!vaus.some(([y, x]) => y === py && x === px)) {
+    grid[py][px] = " ";
   }
 
-  grid[y1][x1] = "  ";
-};
-
-const checkPaddleCollision = (vaus, ball, prevPos, velocity) => {
-  const [vausY, vausXStart] = vaus[0];
-  const vausXEnd = vaus[vaus.length - 1][1];
-  const crossedY = prevPos.y < vausY && ball.y >= vausY;
-  const withinX = ball.x >= vausXStart && ball.x <= vausXEnd;
-  const hit = crossedY && withinX;
-
-  if (hit) {
-    const mid = vaus[Math.floor(vaus.length / 2)][1];
-    const hitRatio = (ball.x - mid) / Math.floor(vaus.length / 2);
-    velocity.dx = hitRatio * 0.5;
-    velocity.dy *= -Math.abs(velocity.dy);
-  }
-
-  return hit;
-};
-
-const checkWallCollision = (grid, ball, velocity) => {
-  if (ball.x <= 1 || ball.x >= grid[0].length - 2) {
-    velocity.dx = -velocity.dx;
-  }
-  if (ball.y <= 1) {
-    velocity.dy = -velocity.dy;
-  }
-};
-
-const checkBrickCollision = (grid, bricks, ball, velocity) => {
   const y = Math.floor(ball.y);
   const x = Math.floor(ball.x);
 
-  if (y < bricks.length && x < bricks[0].length && bricks[y][x]) {
-    bricks[y][x] = false;
-    grid[y][x] = "  ";
-    velocity.dy = -velocity.dy;
+  if (!vaus.some(([vy, vx]) => vy === y && vx === x)) {
+    grid[y][x] = "o";
+  }
+};
+
+const checkWallCollision = (ball, prev, velocity, width) => {
+  if (prev.x > 1 && ball.x <= 1) {
+    velocity.dx *= -1;
+    ball.x = 1.01;
+  }
+
+  if (prev.x < width - 2 && ball.x >= width - 2) {
+    velocity.dx *= -1;
+    ball.x = width - 2.01;
+  }
+
+  if (prev.y > 1 && ball.y <= 1) {
+    velocity.dy *= -1;
+    ball.y = 1.01;
+  }
+};
+
+const checkPaddleCollision = (vaus, ball, prev, velocity) => {
+  const paddleY = vaus[0][0];
+  const minX = vaus[0][1];
+  const maxX = vaus[vaus.length - 1][1];
+  const withinY = prev.y < paddleY && ball.y >= paddleY;
+  const withinX = ball.x >= minX && ball.x <= maxX;
+
+  if (withinY && withinX) {
+    ball.y = paddleY - 0.01;
+    velocity.dy = -Math.abs(velocity.dy);
+
+    const mid = (minX + maxX) / 2;
+    velocity.dx = (ball.x - mid) * 0.15;
+    return true;
+  }
+
+  return false;
+};
+
+const checkBrickCollision = (grid, bricks, ball, velocity) => {
+  const row = Math.floor(ball.y) - 1;
+  if (row < 0 || row >= bricks.length) return false;
+
+  const col = Math.floor((ball.x - 2) / 3);
+  if (col < 0 || col >= bricks[0].length) return false;
+
+  if (bricks[row][col]) {
+    bricks[row][col] = false;
+    grid[row + 1][2 + col * 3] = " "; //brick has 2 char so clears one
+    grid[row + 1][3 + col * 3] = " "; //brick has 2 char so clears the other
+    velocity.dy *= -1;
     return true;
   }
   return false;
 };
 
 export const throwEnergyBall = (grid, bricks, vaus, ball, velocity) => {
-  const prevPos = { x: ball.x, y: ball.y };
+  const prev = { ...ball };
 
   ball.x += velocity.dx;
   ball.y += velocity.dy;
 
-  if (ball.y >= grid.length - 1) {
-    console.error("YOU LOST !");
+  checkWallCollision(ball, prev, velocity, grid[0].length);
+  checkBrickCollision(grid, bricks, ball, velocity);
+
+  const hitPaddle = checkPaddleCollision(vaus, ball, prev, velocity);
+
+  if (!hitPaddle && ball.y >= grid.length - 1) {
+    console.error("YOU LOST!");
     return false;
   }
 
-  checkWallCollision(grid, ball, velocity);
-  checkBrickCollision(grid, bricks, ball, velocity);
-  checkPaddleCollision(vaus, ball, prevPos, velocity);
-
-  throwTheBall(grid, ball, prevPos, vaus);
+  drawBall(grid, ball, prev, vaus);
 };

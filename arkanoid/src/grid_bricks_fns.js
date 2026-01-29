@@ -1,6 +1,7 @@
-export const createGrid = (h, w, char = "🟥") => {
+export const createGrid = (h, w, char = "#") => {
   const filledRow = Array(w).fill(char);
-  const hollowRow = Array(w).fill("  ");
+  const hollowRow = Array(w).fill(" ");
+
   hollowRow[0] = char;
   hollowRow[w - 1] = char;
 
@@ -15,30 +16,40 @@ export const createGrid = (h, w, char = "🟥") => {
   return grid;
 };
 
+export const createBricks = ({
+  rows,
+  gridWidth,
+  brickWidth = 2,
+  gap = 1,
+  margin = 2,
+}) => {
+  const usable = gridWidth - margin * 2;
+  const perRow = Math.floor((usable + gap) / (brickWidth + gap));
+  return Array.from({ length: rows }, () => Array(perRow).fill(true));
+};
+
 export const drawBricks = (bricks, grid) => {
-  bricks.forEach((row, i) => {
-    row.forEach((exists, j) => {
-      if (exists) grid[i + 1][j + 1] = "▭▭";
+  bricks.forEach((row, r) => {
+    let x = 2;
+    row.forEach((exists) => {
+      if (exists) {
+        grid[r + 1][x] = "=";
+        grid[r + 1][x + 1] = "=";
+      }
+      x += 3;
     });
   });
 };
 
 export const drawVaus = (vaus, grid) => {
-  vaus.forEach(([y, x]) => {
-    grid[y][x] = "▬▬";
-  });
+  vaus.forEach(([y, x]) => (grid[y][x] = "="));
 };
 
 export const clearVaus = (vaus, grid) => {
-  vaus.forEach(([y, x]) => {
-    grid[y][x] = "  ";
-  });
+  vaus.forEach(([y, x]) => (grid[y][x] = " "));
 };
 
-export const showDisplay = (grid) => {
-  const screen = grid.map((row) => row.join("")).join("\n");
-  console.log(screen);
-};
+export const showDisplay = (grid) =>
+  console.log(grid.map((r) => r.join("")).join("\n"));
 
-export const brickPresent = (bricks) =>
-  bricks.some((row) => row.some((exists) => exists));
+export const brickPresent = (bricks) => bricks.some((row) => row.some(Boolean));

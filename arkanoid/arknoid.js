@@ -3,8 +3,8 @@ import { getInput } from "./src/input.js";
 import { brickPresent, showDisplay } from "./src/grid_bricks_fns.js";
 import { throwEnergyBall } from "./src/energy_ball_fns.js";
 
-const width = 100;
-const height = 90;
+const width = 40;
+const height = 20;
 
 const play = (height, width) => {
   const { grid, bricks, vaus, velocity, energyBall } = setUpEnv(height, width);
@@ -15,12 +15,15 @@ const play = (height, width) => {
 
   setInterval(() => {
     console.clear();
-    const resume = throwEnergyBall(grid, bricks, vaus, energyBall, velocity) ??
+
+    const alive = throwEnergyBall(grid, bricks, vaus, energyBall, velocity) ??
       true;
-    if (!resume || !brickPresent(bricks)) Deno.exit(0);
+
+    if (!alive || !brickPresent(bricks)) Deno.exit(0);
+
     showDisplay(grid);
     console.log(msg);
-  }, 150);
+  }, 60);
 };
 
 play(height, width);
