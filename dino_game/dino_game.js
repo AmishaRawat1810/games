@@ -1,3 +1,3 @@
-import { gameLoop } from "./setup.js";
+import { playGame } from "./setup.js";
 
-setInterval(gameLoop, 80);
+setInterval(playGame, 80);

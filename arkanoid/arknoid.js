@@ -23,7 +23,7 @@ const play = (height, width) => {
 
     showDisplay(grid);
     console.log(msg);
-  }, 60);
+  }, 50);
 };
 
 play(height, width);

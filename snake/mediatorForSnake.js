@@ -14,6 +14,6 @@ const mapToKeyStroke = {
 export const getInput = async () => {
   const buf = new Uint8Array(3);
   await Deno.stdin.read(buf);
-  const keyStroke = buf.join("");
-  return mapToKeyStroke[keyStroke];
+  const keyStroke = mapToKeyStroke[buf.join("")];
+  return keyStroke;
 };
