@@ -11,9 +11,7 @@ export const colorCodes = {
   magenta: "\x1b[45m \x1b[0m",
   cyan: "\x1b[46m \x1b[0m",
   white: "\x1b[47m \x1b[0m",
+  eraser: "\x1b[0m \x1b[0m",
 };
 
-export const colorPos = {};
-
-export const writer = Deno.stdout.writable.getWriter();
 export const encoder = new TextEncoder();

@@ -39,3 +39,4 @@ Reset : \x1b[0m
 -> magenta: { row: 35, col: [ 28, 9 ] },
 -> cyan: { row: 35, col: [ 37, 6 ] },
 -> white: { row: 35, col: [ 43, 7 ] }
+-> reset: { row: 35, col: [ 52, 57 ] }

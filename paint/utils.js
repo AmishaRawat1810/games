@@ -1,10 +1,4 @@
-import {
-  colorCodes,
-  DISABLE_DRAG_TRACKING,
-  DISABLE_MOUSE,
-  encoder,
-  writer,
-} from "./globals.js";
+import { colorCodes } from "./globals.js";
 
 export const storeOptionsPos = (colorPos) => {
   const colors = [...Object.keys(colorCodes)];
@@ -16,9 +10,4 @@ export const storeOptionsPos = (colorPos) => {
     colorPos[color] = { row, col: [cStart, cEnd] };
     prevColorEnd = cEnd;
   });
-};
-
-export const cleanUp = async () => {
-  await writer.write(encoder.encode(DISABLE_DRAG_TRACKING + DISABLE_MOUSE));
-  Deno.stdout.close();
 };
