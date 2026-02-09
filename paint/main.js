@@ -17,7 +17,7 @@ const setUp = async (colorPos) => {
   await writer.write(encoder.encode(ENABLE_MOUSE + ENABLE_DRAG_TRACKING));
   writer.releaseLock();
   storeOptionsPos(colorPos);
-  console.log("Press 'ctrl + c' to exit.");
+  console.log("Press 'q' to exit.");
 };
 
 const paintTheBlock = (col, row, defaultColor, colorPos) => {
@@ -33,7 +33,7 @@ const paintTheBlock = (col, row, defaultColor, colorPos) => {
   return `\x1b[${row};${col}H${defaultColor}`;
 };
 
-const showTheOptions = () => {
+const createMenu = () => {
   const colors = Object.keys(colorCodes);
   const colorOptions = [];
   for (const key in colors) {
@@ -48,7 +48,7 @@ const showTheOptions = () => {
 
 const paint = new TransformStream({
   transform(chunk, controller) {
-    const menu = showTheOptions();
+    const menu = createMenu();
     menu.forEach((item) => controller.enqueue(item));
 
     if (chunk.includes("q")) {
