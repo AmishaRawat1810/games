@@ -27,7 +27,7 @@ export const startSession = (username, conn, msg) => {
   const id = `session_${sessionCounter++}`;
   sessions.set(id, new Set(validUsers));
   validUsers.forEach((user) => userSession.set(user, id));
-  announceSession(valid);
+  announceSession(validUsers);
 };
 
 export const leaveSession = (username, conn) => {

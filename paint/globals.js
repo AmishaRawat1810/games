@@ -1,6 +1,6 @@
 export const DISABLE_MOUSE = "\x1b[?1006l\x1b[?1003l";
-export const DISABLE_DRAG_TRACKING = "\x1b[?1003l\x1b[?1006l";
 export const ENABLE_MOUSE = "\x1b[?1006h\x1b[?1003h";
+export const DISABLE_DRAG_TRACKING = "\x1b[?1003l\x1b[?1006l";
 export const ENABLE_DRAG_TRACKING = "\x1b[?1003h\x1b[?1006h";
 
 export const colorCodes = {

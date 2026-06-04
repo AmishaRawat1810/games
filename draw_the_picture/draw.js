@@ -1,78 +1,94 @@
 import {
-  DISABLE_DRAG_TRACKING,
   DISABLE_MOUSE,
-  ENABLE_DRAG_TRACKING,
   ENABLE_MOUSE,
+  HIDE_CURSOR,
   masterPalette,
+  SHOW_CURSOR,
 } from "./global.js";
+import { drawOnTerminal, patterns } from "./utils.js";
 
 const encode = (text) => new TextEncoder().encode(text);
-const colorPos = {};
+let brush = 17;
 
-const state = {
-  brush: masterPalette[17],
-  isDrawing: false,
-};
-
-const setUp = async (colorPos) => {
+const setUp = async (pattern = patterns.turtle) => {
+  console.clear();
   const writer = Deno.stdout.writable.getWriter();
-  await writer.write(encode("\x1b[2J" + ENABLE_MOUSE + ENABLE_DRAG_TRACKING));
-  storeOptionsPos(colorPos);
+  await writer.write(encode(ENABLE_MOUSE));
+  await writer.write(encode(HIDE_CURSOR));
+  await drawOnTerminal(pattern, writer);
 
-  for (const id in colorPos) {
-    const { row, col } = colorPos[id];
-    const color = masterPalette[id].ansi;
-    await writer.write(encode(`\x1b[${row};${col[0]}H${color}`));
+  for (let id = 0; id < masterPalette.length; id++) {
+    const col = (id + 1) * 3;
+    const output = id < 10 ? `${id}` : `${id} `;
+    await writer.write(encode(`\x1b[${13};${col}H${output}`));
   }
-  await writer.write(
-    encode(`Press 'q' to exit | Current: ${state.brush.color}`),
-  );
 
+  await writer.write(encode("\nPress 'q' or 'ctrl + c' to exit"));
   writer.releaseLock();
 };
 
-// const paintTheBlock = (col, row, brush) => {
-//   for (const color in colorPos) {
-//     const colorRow = colorPos[color].row;
-//     const colorCol = colorPos[color].col;
-//     if ((row === colorRow) && (col >= colorCol[0] && col <= colorCol[1])) {
-//       brush = masterPalette[color];
-//       return `\x1b[${row};${col}H${brush}`;
-//     }
-//   }
-//   return `\x1b[${row};${col}H${brush}`;
-// };
+const addBg = (row, col, color, value) =>
+  `\x1b[${row};${col}H${color}${value}\x1b[0m`;
+
+const updateBrush = (col, row, prevId) => {
+  const prevCol = (prevId + 1) * 3;
+
+  for (let id = 0; id < masterPalette.length; id++) {
+    const colStart = (id + 1) * 3;
+    const colEnd = colStart + 1;
+    if (col >= colStart && col <= colEnd) {
+      brush = id;
+      const clearPrev = addBg(row, prevCol, "\x1b[49m", prevId);
+      const selected = addBg(row, colStart, "\x1b[48;5;244m", id);
+      return { selected, clearPrev };
+    }
+  }
+};
 
 const handleInput = (match, controller) => {
   const [, button, colStr, rowStr] = match;
-  const [col, row] = [parseInt(colStr), parseInt(rowStr)];
+  const col = parseInt(colStr);
+  const row = parseInt(rowStr);
 
-  //FOR MENU
-  if ((row === 13) )
+  if (row === 13 && button === "0") {
+    const { selected, clearPrev } = updateBrush(col, row, brush);
+    controller.enqueue(clearPrev);
+    controller.enqueue(selected);
+  }
+
+  if (button === "0" && row < 13) {
+    controller.enqueue(`\x1b[${row};${col}H${masterPalette[brush]}`);
+  }
 };
 
 const paint = new TransformStream({
   transform(chunk, controller) {
-    if (chunk.includes("q")) {
-      controller.enqueue(DISABLE_MOUSE + "\x1b[?25h\x1b[2J\x1b[H");
-      return controller.terminate();
+    if (chunk === "q") {
+      controller.enqueue(DISABLE_MOUSE + SHOW_CURSOR);
+      controller.terminate();
+      return;
     }
 
     [...chunk.matchAll(/<(\d+);(\d+);(\d+)M/g)]
       .forEach((match) => handleInput(match, controller));
   },
+
+  flush(controller) {
+    controller.enqueue(DISABLE_MOUSE + SHOW_CURSOR);
+  },
 });
 
-const startPaint = async () => {
+export const startPaint = async () => {
   try {
-    await setUp(colorPos);
+    await setUp();
+    Deno.stdin.setRaw(true, { cbreak: true });
     await Deno.stdin.readable
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(paint)
       .pipeThrough(new TextEncoderStream())
-      .pipeThrough(Deno.stdout.writable);
+      .pipeTo(Deno.stdout.writable);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
   }
 };
 
